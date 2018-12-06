@@ -20,7 +20,7 @@ def index(request):
         title = request.POST.get('title')
         if not title:
             has_errors = True
-            errors['title'] = 'Missing Field'
+            errors['title'] = "A title must be provided"
 
     sort_method = request.GET.get('sort', 'asc')
     books = Book.objects.all()
@@ -59,20 +59,41 @@ def create_book(request):
 def edit_book(request, book_id=None):
     book = get_object_or_404(Book, id=book_id)
     authors = Author.objects.all()
-    if request.method == 'GET':
-        return render(
-            request,
-            'edit_book.html',
-            context={'book': book, 'authors': authors}
-        )
-    else:
+    errors = {}
+
+    if request.method == 'POST':
         author = get_object_or_404(Author, id=request.POST['author'])
-        book.title = request.POST['title']
-        book.author = author
-        book.isbn = request.POST['isbn']
-        book.popularity = request.POST['popularity']
-        book.save()
-        return redirect('/')
+        title = request.POST['title']
+
+        if not title:
+            errors['title'] = "A title must be provided"
+
+        if len(title) > 30:
+            errors['title'] = "Title can't be longer than 30 chars"
+
+        if not errors:
+            book.title = title
+            book.author = author
+            book.isbn = request.POST['isbn']
+            book.popularity = request.POST['popularity']
+            book.save()
+            return redirect('/')
+
+    return render(
+        request,
+        'edit_book.html',
+        context={
+            'book': book,
+            'authors': authors,
+            'errors': errors,
+            'book_data': {
+                'title': request.POST.get('title'),
+                'author': request.POST.get('author'),
+                'isbn': request.POST.get('isbn'),
+                'popularity': request.POST.get('popularity'),
+            }
+        }
+    )
 
 
 def delete_book(request):

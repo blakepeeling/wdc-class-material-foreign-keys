@@ -10,7 +10,17 @@
       {% csrf_token %}
 
       <label for="title">Title:</label>
-      <input id="title" type="text" name='title' value='{{book.title}}' {% if 'title' in errors %}style='border: 1px red solid'{% endif %}> <span style='color:red'>{{errors.title}}</span>
+      <input
+        id="title"
+        type="text"
+        name='title'
+        {% if 'title' in errors %}
+          value='{{book_data.title}}'
+          style='border: 1px red solid'
+        {% else %}
+          value='{{book.title}}'
+        {% endif %}
+      ><span style='color:red'> {{errors.title}}</span>
 
         <br>
 
@@ -24,12 +34,23 @@
       <br>
 
       <label for="isbn">ISBN:</label>
-      <input id="isbn" type="text" name='isbn' value='{{book.isbn}}'>
+        <input
+          id="isbn"
+          type="text"
+          name='isbn'
+          value='{{book_data.isbn|default:book.isbn}}'
+        >
 
       <br>
 
       <label for="popularity">Popularity:</label>
-      <input id="popularity" type="number" name='popularity' value='{{book.popularity}}' step="0.1">
+      <input
+        id="popularity"
+        type="number"
+        name='popularity'
+        step="0.1"
+        value='{{book_data.popularity|default:book.popularity}}'
+      >
       <br>
       <input type="submit" value="Edit">
     </form>
