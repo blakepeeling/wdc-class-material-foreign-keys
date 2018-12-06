@@ -32,12 +32,12 @@
             <td><a href="{% url 'author_by_id' book.author.id %}">{{ book.author.name}}</a></td>
             <td>{{ book.popularity}}</td>
             <td>
+              <a href="/edit_book/{{book.id}}"><button type="button">Edit</button></a>
               <form class="" action="/delete_book" method="post">
                 {% csrf_token %}
                 <input type="hidden" name='book_id' value='{{book.id}}'>
-                <input type="submit" value='delete'>
+                <input type="submit" value='Delete'>
               </form>
-
             </td>
           </tr>
         {% endfor %}
@@ -45,7 +45,7 @@
     </table>
     <p><a href="{% url 'authors' %}">Prefer to browse by author?</a></p>
     <h1>Create a new book</h1>
-    <form class="" action="/create_book" method="POST">
+    <form class="" action="/" method="POST">
       {% csrf_token %}
 
       <label for="title">Title:</label>
