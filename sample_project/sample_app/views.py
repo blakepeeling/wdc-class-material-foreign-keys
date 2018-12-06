@@ -56,6 +56,25 @@ def create_book(request):
     return redirect('/')
 
 
+def edit_book(request, book_id=None):
+    book = get_object_or_404(Book, id=book_id)
+    authors = Author.objects.all()
+    if request.method == 'GET':
+        return render(
+            request,
+            'edit_book.html',
+            context={'book': book, 'authors': authors}
+        )
+    else:
+        author = get_object_or_404(Author, id=request.POST['author'])
+        book.title = request.POST['title']
+        book.author = author
+        book.isbn = request.POST['isbn']
+        book.popularity = request.POST['popularity']
+        book.save()
+        return redirect('/')
+
+
 def delete_book(request):
     book_id = request.POST.get('book_id')
 
